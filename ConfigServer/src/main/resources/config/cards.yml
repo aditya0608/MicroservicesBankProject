@@ -1,0 +1,11 @@
+build:
+  version: 3.0
+
+cards:
+  message: "Hello customer -LOCAL CARDS"
+  contact:
+    email: "aditya.cm60@gmail.com-LOCAL CARDS"
+  phoneNumbers:
+    - 90900909-LOCAL
+    - 99879890-LOCAL
+

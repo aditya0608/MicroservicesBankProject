@@ -1,0 +1,10 @@
+build:
+  version: 1.0
+
+cards:
+  message: "Hello customer from PROD CARDS"
+  contact:
+    email: "aditya.cm60@gmail.com-PROD CARDS"
+  phoneNumbers:
+    - 90900909-PROD
+    - 99879890-PROD

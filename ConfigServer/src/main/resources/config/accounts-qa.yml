@@ -1,0 +1,11 @@
+build:
+  version: 2.0
+
+accounts:
+  message: "Hello customer from QA"
+  contact:
+    email: "aditya.cm60@gmail.com-QA"
+  phoneNumbers:
+    - 90900909-QA
+    - 99879890-QA
+

@@ -1,0 +1,11 @@
+build:
+  version: 3.0
+
+accounts:
+  message: "Hello customer -LOCAL"
+  contact:
+    email: "aditya.cm60@gmail.com-LOCAL"
+  phoneNumbers:
+    - 90900909-LOCAL
+    - 99879890-LOCAL
+

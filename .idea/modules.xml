@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ConfigServer/ConfigServer.iml" filepath="$PROJECT_DIR$/ConfigServer/ConfigServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/MicroServicesBankProjectSpringCloudConfig.iml" filepath="$PROJECT_DIR$/.idea/MicroServicesBankProjectSpringCloudConfig.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Accounts/accounts.iml" filepath="$PROJECT_DIR$/Accounts/accounts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Cards/cards.iml" filepath="$PROJECT_DIR$/Cards/cards.iml" />
+      <module fileurl="file://$PROJECT_DIR$/User/user.iml" filepath="$PROJECT_DIR$/User/user.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,26 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: user
+
+  datasource:
+    url: jdbc:mysql://localhost:3308/usersdb
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # change to 'validate' in production if schema already exists
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
