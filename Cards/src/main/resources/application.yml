@@ -8,6 +8,11 @@ spring:
     active: "qa"
   config:
     import: "optional:configserver:http://localhost:8071/"
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
 
   datasource:
     url: jdbc:mysql://localhost:3307/cardsdb
@@ -22,3 +27,8 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     open-in-view: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

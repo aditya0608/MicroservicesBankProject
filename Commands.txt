@@ -3,9 +3,35 @@ DOCKER DB CONTAINER:
 
 docker run -p 3306:3306 --name accountsdb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=accountsdb -d mysql
 docker run -p 3307:3306 --name cardsdb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=cardsdb -d mysql
-
+docker run -p 3308:3306 --name usersdb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=userdb -d mysql
 
 DOCKER IMAGE FOR APPLICATION AND RUN IT:
 
-docker build -t accounts:1.0 .
+docker build -t adishars/config-server:1.0 .
+docker build -t adishars/accounts:1.0 .
+
+append username as push will be easy then
+
 docker run -p 8080:8080 accounts-app
+
+PUSH DOCKER IMAGE TO DOCKER HUB
+
+docker image push docker.io/adishars/accounts:1.0
+
+docker image push docker.io/adishars/config-server:1.0
+
+RUN DOCKER COMPOSE FILE
+docker compose up -d
+
+RABBIT-MQ
+
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+
+SCOOP COMMANDS [redirect calls to localhost]
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+irm get.scoop.sh | iex       [run this in powershell]
+
+scoop bucket add hookdeck https://github.com/hookdeck/scoop-hookdeck-cli.git
+scoop install hookdeck
+hookdeck login --cli-key 2wd3ayd4m9f9lw601o6kbnts8ijexvjdc4xl2wkyja8kfu8nai
+hookdeck listen 8071 monitor-conn --path /monitor

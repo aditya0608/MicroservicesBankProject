@@ -1,0 +1,158 @@
+version: "3.9"
+
+# 🔹 Common reusable configs (anchors)
+x-network-deploy-service: &network-deploy-service
+  networks:
+    - bankmicroservice
+
+x-microservice-db-config: &microservice-db-config
+  <<: *network-deploy-service
+  image: mysql:8.0
+  restart: always
+  healthcheck:
+    test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+    interval: 10s
+    timeout: 5s
+    retries: 20
+    start_period: 30s
+
+x-microservice-base-config: &microservice-base-config
+  <<: *network-deploy-service
+  deploy:
+    resources:
+      limits:
+        memory: 700m
+
+# 🔹 Services
+services:
+  accountsdb:
+    container_name: accountsdb
+    ports:
+      - 3306:3306
+    <<: *microservice-db-config
+    environment:
+      MYSQL_DATABASE: accountsdb
+      MYSQL_ROOT_PASSWORD: root
+
+  cardsdb:
+    container_name: cardsdb
+    ports:
+      - 3307:3306
+    <<: *microservice-db-config
+    environment:
+      MYSQL_DATABASE: cardsdb
+      MYSQL_ROOT_PASSWORD: root
+
+  usersdb:
+    container_name: usersdb
+    ports:
+      - 3308:3306
+    <<: *microservice-db-config
+    environment:
+      MYSQL_DATABASE: usersdb
+      MYSQL_ROOT_PASSWORD: root
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq-ms
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    <<: *network-deploy-service
+    environment:
+      SPRING_APPLICATION_NAME: rabbitmq
+
+  configserver:
+    image: "adishars/config-server:1.0"
+    container_name: configserver-ms
+    ports:
+      - "8071:8071"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://configserver:8071/actuator/health/readiness"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    <<: *microservice-base-config
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_APPLICATION_NAME: configserver
+
+
+  accounts:
+    image: "adishars/accounts:1.0"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    depends_on:
+      accountsdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+    <<: *microservice-base-config
+    environment:
+      SPRING_APPLICATION_NAME: accounts
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "http://configserver:8071/"
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  cards:
+    image: "adishars/cards:1.0"
+    container_name: cards-ms
+    ports:
+      - "8090:8090"
+    depends_on:
+      cardsdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+    <<: *microservice-base-config
+    environment:
+      SPRING_APPLICATION_NAME: cards
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "optional:http://configserver:8071/"
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  users:
+    image: "adishars/users:1.0"
+    container_name: users-ms
+    ports:
+      - "9090:9090"
+    depends_on:
+      usersdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+    <<: *microservice-base-config
+    environment:
+      SPRING_APPLICATION_NAME: users
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "optional:http://configserver:8071/"
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: "jdbc:mysql://usersdb:3306/usersdb"
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+# 🔹 Network
+networks:
+  bankmicroservice:
+    driver: bridge

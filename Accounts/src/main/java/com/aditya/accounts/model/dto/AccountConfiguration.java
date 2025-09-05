@@ -7,5 +7,32 @@ import java.util.List;
 import java.util.Map;
 
 @ConfigurationProperties(prefix = "accounts")
-public record AccountConfiguration (String message, Map<String,String> contact, List<String> phoneNumbers){
+public class AccountConfiguration{
+    private String message;
+    private Map<String,String> contact;
+    private List<String> phoneNumbers;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Map<String, String> getContact() {
+        return contact;
+    }
+
+    public void setContact(Map<String, String> contact) {
+        this.contact = contact;
+    }
+
+    public List<String> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(List<String> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
 }

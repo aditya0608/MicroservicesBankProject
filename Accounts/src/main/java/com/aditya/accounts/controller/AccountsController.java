@@ -63,7 +63,7 @@ public class AccountsController {
     @GetMapping("/email")
     public ResponseEntity<String> getEmail()
     {
-        return  ResponseEntity.status(HttpStatus.OK).body(accountConfiguration.contact().get("email"));
+        return  ResponseEntity.status(HttpStatus.OK).body(accountConfiguration.getContact().get("email"));
     }
     @GetMapping("/config")
     public ResponseEntity<AccountConfiguration> getConfiguration()
